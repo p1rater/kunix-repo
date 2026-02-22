@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index of /packages</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; background-color: white; padding: 20px; }
+        h1 { border-bottom: 1px solid #ccc; padding-bottom: 10px; font-weight: normal; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; border-bottom: 2px solid #555; padding: 10px 5px; }
+        td { padding: 8px 5px; font-family: "Courier New", Courier, monospace; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f9f9f9; }
+        a { color: #0000ee; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 0.85em; color: #666; }
+    </style>
+</head>
+<body>
+
+    <h1>Index of /packages</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Last Modified</th>
+                <th>Size</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="file-list">
+            </tbody>
+    </table>
+
+    <div class="footer">
+        Apache/2.4.41 (GitHub Pages) Server at your-domain.com Port 443
+    </div>
+
+    <script>
+        // Fetch the list and generate rows
+        fetch('packages.list')
+            .then(response => response.text())
+            .then(text => {
+                const lines = text.split('\n').filter(line => line.trim() !== "");
+                const tableBody = document.getElementById('file-list');
+
+                lines.forEach(fileName => {
+                    const row = document.createElement('tr');
+                    
+                    // Generating a fake date and size for the Apache look
+                    const fakeDate = new Date().toISOString().split('T')[0];
+                    
+                    row.innerHTML = `
+                        <td><a href="${fileName}">${fileName}</a></td>
+                        <td>${fakeDate}</td>
+                        <td>-</td>
+                        <td>Package File</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading the package list:", error);
+                document.getElementById('file-list').innerHTML = "<tr><td colspan='4'>Error loading packages.list</td></tr>";
+            });
+    </script>
+</body>
+</html>

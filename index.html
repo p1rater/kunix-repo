@@ -2,65 +2,330 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Index of /packages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Index</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: "Segoe UI", Tahoma, sans-serif; padding: 20px; color: #333; }
-        h1 { border-bottom: 1px solid #ccc; padding-bottom: 10px; font-weight: 400; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; border-bottom: 2px solid #333; padding: 10px; background: #f8f8f8; }
-        td { padding: 12px 10px; border-bottom: 1px solid #eee; font-family: monospace; }
-        tr:hover { background-color: #fcfcfc; }
-        a { color: #0066cc; text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; color: #004499; }
-        .footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 0.85em; color: #777; }
-        .icon { margin-right: 8px; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0d0d;
+            --surface: #141414;
+            --border: #222;
+            --border-light: #1c1c1c;
+            --text: #c8c8c8;
+            --text-dim: #555;
+            --text-bright: #e8e8e8;
+            --accent: #00e5a0;
+            --accent-dim: rgba(0, 229, 160, 0.08);
+            --online: #00e5a0;
+            --row-hover: #171717;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        .shell {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 60px 32px 80px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+
+        .header-path {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 18px;
+            font-weight: 300;
+            color: var(--text-bright);
+            letter-spacing: -0.3px;
+        }
+
+        .header-path .slash {
+            color: var(--text-dim);
+        }
+
+        .header-path .segment {
+            color: var(--accent);
+        }
+
+        .header-meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-left: auto;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats row */
+        .stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--text-bright);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        /* Table */
+        .table-wrap {
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            padding: 12px 18px;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--row-hover);
+        }
+
+        td {
+            padding: 14px 18px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+        }
+
+        td.name a {
+            color: var(--text-bright);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        td.name a:hover {
+            color: var(--accent);
+        }
+
+        td.status {
+            color: var(--text-dim);
+        }
+
+        .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--online);
+            margin-right: 8px;
+            position: relative;
+            top: -1px;
+            box-shadow: 0 0 6px var(--online);
+        }
+
+        .status-text {
+            color: var(--online);
+        }
+
+        td.type {
+            color: var(--text-dim);
+            font-size: 11px;
+        }
+
+        /* Empty & error states */
+        .state-row td {
+            text-align: center;
+            padding: 40px 18px;
+            color: var(--text-dim);
+        }
+
+        .loading-dots span {
+            animation: blink 1.2s infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 4px var(--accent);
+        }
     </style>
 </head>
 <body>
+    <div class="shell">
 
-    <h1>Index of /packages</h1>
+        <div class="header">
+            <div class="header-path">
+                <span class="slash">/</span><span class="segment">packages</span>
+            </div>
+            <div class="header-meta" id="timestamp">—</div>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Package Name</th>
-                <th>Status</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody id="package-list">
-            </tbody>
-    </table>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="stat-total">—</div>
+                <div class="stat-label">Packages</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-online">—</div>
+                <div class="stat-label">Online</div>
+            </div>
+        </div>
 
-    <div class="footer">
-        Apache-Style Directory Listing (Static) via GitHub Pages & Namecheap
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="package-list">
+                    <tr class="state-row">
+                        <td colspan="3">
+                            <span class="loading-dots">
+                                <span>▪</span><span>▪</span><span>▪</span>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <span>Static directory listing — GitHub Pages / Namecheap</span>
+            <div class="footer-right">
+                <div class="status-indicator"></div>
+                <span>serving</span>
+            </div>
+        </div>
+
     </div>
 
     <script>
+        // Timestamp
+        const now = new Date();
+        document.getElementById('timestamp').textContent =
+            now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+
         fetch('packages.list')
-            .then(response => response.text())
+            .then(r => r.text())
             .then(data => {
-                const lines = data.split('\n').filter(line => line.includes('='));
-                const container = document.getElementById('package-list');
+                const lines = data.split('\n').filter(l => l.includes('='));
+                const tbody = document.getElementById('package-list');
+                tbody.innerHTML = '';
+
+                if (lines.length === 0) {
+                    tbody.innerHTML = '<tr class="state-row"><td colspan="3">No packages found.</td></tr>';
+                    return;
+                }
+
+                document.getElementById('stat-total').textContent = lines.length;
+                document.getElementById('stat-online').textContent = lines.length;
 
                 lines.forEach(line => {
-                    // Splitting the "Name = Link" format
                     const parts = line.split('=');
                     const name = parts[0].trim();
                     const link = parts[1].trim();
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><span class="icon">📦</span><a href="${link}" target="_blank">${name}</a></td>
-                        <td><span style="color: green;">● Online</span></td>
-                        <td>Binary/Archive</td>
+                        <td class="name"><a href="${link}">${name}</a></td>
+                        <td class="status"><span class="dot"></span><span class="status-text">online</span></td>
+                        <td class="type">binary/archive</td>
                     `;
-                    container.appendChild(tr);
+                    tbody.appendChild(tr);
                 });
             })
-            .catch(err => {
-                console.error("Error loading list:", err);
-                document.getElementById('package-list').innerHTML = "<tr><td colspan='3'>Error loading packages.list</td></tr>";
+            .catch(() => {
+                document.getElementById('package-list').innerHTML =
+                    '<tr class="state-row"><td colspan="3">Failed to load packages.list</td></tr>';
             });
     </script>
 </body>
